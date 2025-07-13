@@ -2,9 +2,11 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
-    SECRET_KEY = '1234567890'
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(basedir, 'instance', 'staff.db')}"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False# SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/staff.db'
+    # SECRET_KEY = '1234567890'
+    # SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(basedir, 'instance', 'staff.db')}"
+    # SQLALCHEMY_TRACK_MODIFICATIONS = False# SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/staff.db'
+    SECRET_KEY = os.getenv("SECRET_KEY", "devkey")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = 'smtp.mailersend.net'
     MAIL_PORT = 587
