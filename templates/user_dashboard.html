@@ -1,0 +1,69 @@
+<!-- User dashboard -->
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0"><i class="bi bi-person-circle"></i> Welcome, {{ current_user.name }}!</h2>
+        <a href="{{ url_for('main.user_notifications') }}" class="btn btn-outline-secondary position-relative">
+            <i class="bi bi-bell-fill fs-4"></i>
+            {% if leave_notifications|length > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ leave_notifications|length }}
+            </span>
+            {% endif %}
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-person-lines-fill"></i> Your Profile
+                </div>
+                <div class="card-body">
+                    {% if profile %}
+                        <div class="text-center mb-3">
+                            {% if profile.passport_photo %}
+                                <img src="{{ url_for('static', filename='uploads/profile_photos/' ~ profile.passport_photo) }}" alt="Passport Photo">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='default-user.png') }}" alt="Default Photo" class="img-thumbnail" width="120">
+                            {% endif %}
+                        </div>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Phone:</strong> {{ profile.phone }}</li>
+                            <li class="list-group-item"><strong>Age:</strong> {{ profile.age }}</li>
+                            <li class="list-group-item"><strong>Ministry:</strong> {{ profile.ministry }}</li>
+                            <li class="list-group-item"><strong>Department:</strong> {{ profile.department }}</li>
+                            <li class="list-group-item"><strong>Role:</strong> {{ profile.role }}</li>
+                            <li class="list-group-item"><strong>Year of Office:</strong> {{ profile.year_of_office }}</li>
+                            <li class="list-group-item"><strong>Address:</strong> {{ profile.address }}</li>
+                        </ul>
+                        <a href="{{ url_for('main.edit_contact') }}" class="btn btn-primary">
+                            <i class="bi bi-pencil-square"></i> Edit Contact
+                        </a>
+                    {% else %}
+                        <p>You have not completed your profile yet.</p>
+                        <a href="{{ url_for('main.profile') }}" class="btn btn-success">
+                            <i class="bi bi-person-plus-fill"></i> Complete Profile
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex flex-column gap-3">
+            <a href="{{ url_for('main.leave') }}" class="btn btn-warning btn-lg shadow-sm">
+                <i class="bi bi-calendar-plus"></i> Request Leave
+            </a>
+            <a href="{{ url_for('main.pay_info') }}" class="btn btn-info btn-lg shadow-sm text-white">
+                <i class="bi bi-cash-coin"></i> View Pay Info
+            </a>
+            <a href="{{ url_for('main.view_staff')}}" class="btn btn-info btn-lg shadow-sm text-white">
+                <i class="bi bi-people-fill"></i> View All Staff
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

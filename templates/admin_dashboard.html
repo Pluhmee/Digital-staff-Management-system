@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill fs-2 text-primary"></i>
+                    <h5 class="card-title mt-2">Users</h5>
+                    <span class="badge bg-primary fs-5">{{ users|length }}</span>
+                </div>
+            </div>
+             <!-- Invite Staff Button -->
+    <div class="mb-3">
+        <a href="{{ url_for('main.invite_staff') }}" class="btn btn-success">
+            <i class="bi bi-person-plus"></i> Invite Staff
+        </a>
+    </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge-fill fs-2 text-success"></i>
+                    <h5 class="card-title mt-2">Staff Profiles</h5>
+                    <span class="badge bg-success fs-5">{{ profiles|length }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-envelope-paper-fill fs-2 text-warning"></i>
+                    <h5 class="card-title mt-2">Leave Requests</h5>
+                    <span class="badge bg-warning text-dark fs-5">{{ leave_requests|length }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <i class="bi bi-people-fill"></i> All Users
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <span class="badge {% if user.role == 'admin' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {{ user.role|capitalize }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">No users found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export to PDF Button -->
+    <div class="mb-3 d-flex justify-content-end">
+        <a href="{{ url_for('main.export_staff_pdf') }}" class="btn btn-outline-danger">
+            <i class="bi bi-file-earmark-pdf"></i> Export Staff List to PDF
+        </a>
+    </div>
+
+    <!-- Staff Profiles Table -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <i class="bi bi-person-badge-fill"></i> All Staff Profiles
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Staff ID</th>
+                            <th>User</th>
+                            <th>Phone</th>
+                            <th>Ministry</th>
+                            <th>Department</th>
+                            <th>Role</th>
+                            <th>Year of Office</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for profile in profiles %}
+                        <tr>
+                            <td>{{ profile.id }}</td>
+                            <td>{{ profile.user.name if profile.user else 'N/A' }}</td>
+                            <td>{{ profile.phone }}</td>
+                            <td>{{ profile.ministry }}</td>
+                            <td>{{ profile.department }}</td>
+                            <td>{{ profile.role }}</td>
+                            <td>{{ profile.year_of_office }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No staff profiles found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leave Requests Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <i class="bi bi-envelope-paper-fill"></i> Leave Requests
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Reason</th>
+                            <th>Date Submitted</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for leave in leave_requests %}
+                        <tr>
+                            <td>{{ leave.id }}</td>
+                            <td>{{ leave.user.name if leave.user else 'N/A' }}</td>
+                            <td>{{ leave.reason }}</td>
+                            <td>{{ leave.date_submitted.strftime('%Y-%m-%d') if leave.date_submitted else '' }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if leave.status == 'approved' %}bg-success
+                                    {% elif leave.status == 'declined' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ leave.status|capitalize }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if leave.status != 'approved' %}
+                                <form method="POST" action="{{ url_for('main.approve_leave', leave_id=leave.id) }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+                                {% endif %}
+                                {% if leave.status != 'declined' %}
+                                <form method="POST" action="{{ url_for('main.decline_leave', leave_id=leave.id) }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No leave requests found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+{% endblock %}

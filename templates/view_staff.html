@@ -1,0 +1,37 @@
+<!-- All staff view -->
+ {% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>All Staff</h2>
+    <a href="{{ url_for('main.export_staff_pdf') }}" class="btn btn-secondary mb-3">Export to PDF</a>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Staff ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Department</th>
+                <th>Role</th>
+                <th>Year of Office</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in staff %}
+            <tr>
+                <td>{{ s.id }}</td>
+                <td>{{ s.user.name if s.user else 'N/A' }}</td>
+                <td>{{ s.phone }}</td>
+                <td>{{ s.department }}</td>
+                <td>{{ s.role }}</td>
+                <td>{{ s.year_of_office }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No staff found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

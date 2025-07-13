@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Notifications</h2>
+    <ul class="list-group">
+        {% for leave in leave_notifications %}
+        <li class="list-group-item">
+            Your leave request ({{ leave.reason }}) was <strong>{{ leave.status }}</strong>.
+        </li>
+        {% else %}
+        <li class="list-group-item">No notifications.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
