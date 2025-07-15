@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: digital-staff-management
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    plan: free  # or 'starter', 'standard' etc. if needed
+    autoDeploy: true
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.10
