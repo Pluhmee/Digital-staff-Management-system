@@ -10,6 +10,7 @@ import logging
 
 app = Flask(__name__)
 app.config.from_object(Config)
+print("DB URI:", app.config.get("SQLALCHEMY_DATABASE_URI"))
 app.config['MAIL_DEBUG'] = True  # <-- Add this line
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -35,6 +36,8 @@ for rule in app.url_map.iter_rules():
     print(rule)
 if __name__ == '__main__':
  app.run(debug=True)
+ 
+
 # mail= mail()
 # mail = Mail()
 
