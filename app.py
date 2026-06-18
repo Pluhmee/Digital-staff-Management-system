@@ -22,6 +22,11 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
+@app.after_request
+def add_headers(response):
+    response.headers['X-Frame-Options'] = 'ALLOWALL'
+    return response
+    
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
