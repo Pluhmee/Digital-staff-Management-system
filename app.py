@@ -23,8 +23,11 @@ login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
 @app.after_request
-def add_headers(response):
-    response.headers['X-Frame-Options'] = 'ALLOWALL'
+def add_iframe_headers(response):
+    # Remove the old blocking header entirely
+    response.headers.pop('X-Frame-Options', None)
+    # Use the modern CSP header instead
+    response.headers['Content-Security-Policy'] = "frame-ancestors *"
     return response
     
 @login_manager.user_loader
